@@ -42,7 +42,7 @@ Out.ar(3,sig4);
 
 (
 Pdef(\1, Pbind(\instrument, \player,
-	\dur,120,
+	\dur,30,
 	\tempo,Pxrand([1,3/4,2/3,3/4,1/2],inf);
 )).play;
 );
@@ -85,7 +85,7 @@ OSCdef(\amp4, { |msg|
 ~v.drawFunc ={
 Pen.translate(400,400);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////points
-2000.do{
+496.do{
 
 		x1=x1+(~a/100);
 		p1= (x1)/1;
@@ -107,7 +107,7 @@ Pen.translate(400,400);
 		y7=exp(Complex(0,1)*(angle).degrad);
 		y8=exp(Complex(0,1)*(angle+p4).degrad);
 
-			Pen.width=2;
+			Pen.width=0.08;
 			rad1=y2.real*300;
 		    rad2=y2.imag*300;
 		    rad3=y2.real*300;
@@ -119,15 +119,18 @@ Pen.translate(400,400);
 
 		Color(red:1,green:1,blue:1).set;
 
-	    Pen.addOval(Rect.new(Polar.new(rad1,y1.theta).asPoint.x,Polar.new(rad2,y2.theta).asPoint.y,~a,~a));
+	    Pen.addOval(Rect.new(Polar.new(rad1,y1.theta).asPoint.x,Polar.new(rad2,y2.theta).asPoint.y,~a*150,~a*150));
 
-		Pen.addOval(Rect.new(Polar.new(rad3,y3.theta).asPoint.x,Polar.new(rad4,y4.theta).asPoint.y,~b,~b));
+		Pen.addOval(Rect.new(Polar.new(rad3,y3.theta).asPoint.x,Polar.new(rad4,y4.theta).asPoint.y,~b*150,~b*150));
 
-		Pen.addOval(Rect.new(Polar.new(rad5,y5.theta).asPoint.x,Polar.new(rad6,y6.theta).asPoint.y,~c,~c));
+		Pen.addOval(Rect.new(Polar.new(rad5,y5.theta).asPoint.x,Polar.new(rad6,y6.theta).asPoint.y,~c*150,~c*150));
 
-		Pen.addOval(Rect.new(Polar.new(rad7,y7.theta).asPoint.x,Polar.new(rad8,y8.theta).asPoint.y,~d,~d));
+		Pen.addOval(Rect.new(Polar.new(rad7,y7.theta).asPoint.x,Polar.new(rad8,y8.theta).asPoint.y,~d*150,~d*150));
 
-	//Pen.line(Point.new(Polar.new(rad5,y3.theta).asPoint.x,Polar.new(rad1,y.theta).asPoint.y),
+		Pen.line(Point.new(Polar.new(rad1,y1.theta).asPoint.x,Polar.new(rad2,y2.theta).asPoint.y));
+		Pen.line(Point.new(Polar.new(rad3,y3.theta).asPoint.x,Polar.new(rad4,y4.theta).asPoint.y));
+		Pen.line(Point.new(Polar.new(rad5,y5.theta).asPoint.x,Polar.new(rad6,y6.theta).asPoint.y));
+		Pen.line(Point.new(Polar.new(rad7,y7.theta).asPoint.x,Polar.new(rad8,y8.theta).asPoint.y));
 
 		Pen.rotate(1.3333pi);
 		Pen.stroke;~v.refresh;
@@ -138,5 +141,5 @@ Pen.translate(400,400);
 			};
 
 };
-{ while { run } {~v.background_(Color.black); ~v.refresh; (1/10).wait } }.fork(AppClock);
+{ while { run } {~v.background_(Color.black); ~v.refresh; (1/100).wait } }.fork(AppClock);
 )
