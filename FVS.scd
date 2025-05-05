@@ -73,45 +73,54 @@ elevation=(12).collect{
 	(
 		(
 SynthDef.new(\ospace, {
-	arg gain=1, lfo_amp=1, harm=1, azimuth, elevation, spread=1, ripple=1,amount=1;
-	var sph3,sph4,sph5,osc;
-	var magx,magy,magz,mag_x,mag_y,mag_z;
-	var mod_angle,mod_angle1,mod_angle0,magxx;
-	var mag,wave,waveSpeed=1,waveFreq=8,theta,phi,t,amp=5,sphere;
+	arg gain=1, lfo_amp=1, harm=1, azimuth, elevation, spread=1, ripple=1,amount=1,varamp=5;
+	var magx,magy,magz,mag_x,mag_y,mag_z,osc,magqx,magqy,mag_qx,mag_qy;
+	var mod_angle,mod_angle1,mod_angle0,magxx,m=3,mq=2;
+	var mag,wave,waveSpeed=1,waveFreq=8,theta,phi,amp=5,sphere,t;
 
-m=harm.lag(0.01);
 waveFreq=amount.lag(0.01);
 t=SinOsc.kr(ripple.lag(0.01)).range(1, 100);
 mod_angle=SinOsc.ar(lfo_amp.lag(0.01),0.degrad,mul:1).range(90.neg.degrad,90.degrad);
 mod_angle1=SinOsc.ar(lfo_amp.lag(0.01),90.degrad,mul:1).range(90.neg.degrad,90.degrad);
 
-		sph3=Spherical(1,azimuth.lag(0.01),elevation.lag(0.01));
-		sph4=Spherical(1,azimuth.lag(0.01),elevation.lag(0.01));
-		sph5=Spherical(1,azimuth.lag(0.01),elevation.lag(0.01));
 				sphere=Spherical(28,azimuth.lag(0.01),elevation.lag(0.01));
 
 (
-magx=((Complex(cos(((sph3.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),
-						cos((((sph3.theta+mod_angle).round(0.00001)*m)).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
-	(Complex(cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
-						cos((sph3.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread);
+magx=((Complex(cos(((sphere.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),
+	cos((((sphere.theta+mod_angle).round(0.00001)*m)).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
+	(Complex(cos((sphere.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
+	cos((sphere.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread);
 				);
 
-magy=((Complex(sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),
-						sin(((sph4.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
-		(Complex(cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
-						cos((sph4.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread);
+magy=((Complex(sin(((sphere.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),
+	sin(((sphere.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
+		(Complex(cos((sphere.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
+	cos((sphere.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread);
 				);
 
-magz=((Complex(cos(((sph5.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),
-						cos(((sph5.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
+magz=((Complex(cos(((sphere.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),
+cos(((sphere.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
+
+magqx=((((Complex(cos(((sphere.theta.round(0.00001)+mod_angle)*mq).wrap(pi.neg,pi)),
+cos(((sphere.theta.round(0.00001)+mod_angle)*mq).wrap(pi.neg,pi))))*
+(Complex(sin((sphere.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2))),
+sin((sphere.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))))*
+(Complex(cos((sphere.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
+cos((sphere.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spread);
+
+ magqy=((((Complex(sin(((sphere.theta.round(0.00001)+mod_angle1)*mq).wrap(pi.neg,pi)),
+sin(((sphere.theta.round(0.00001)+mod_angle1)*mq).wrap(pi.neg,pi))))*
+(Complex(sin((sphere.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2))),
+sin((sphere.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))))*
+(Complex(cos((sphere.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
+cos((sphere.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spread);
 
  theta = azimuth.lag(0.01).degrad;
   phi = elevation.lag(0.01).degrad;
-	 wave = amp*sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
+	 wave = varamp*sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
   magxx=  magx * wave;
 
-				mag_x=magxx.value;mag_y=magy.value;mag_z=magz.value;
+				mag_x=magxx.value;mag_y=magy.value;mag_z=magz.value;mag_qx=magqx.value;mag_qy=magqy.value
 				);
 
 mag=Cartesian(mag_x,mag_y,mag_z).rho;
@@ -136,8 +145,6 @@ w=Window.new("gui",Rect.new(100,100,800,600)).front.alwaysOnTop_(true);
 
 ~cc = Slider2D.new(w.view,Rect.new(60,280,600,300));
 
-~dd = Slider.new(w.view,Rect.new(20,100,500,30));
-
 ~ee = Slider.new(w.view,Rect.new(20,140,500,30));
 
 ~ff = Slider.new(w.view,Rect.new(20,180,500,30));
@@ -151,7 +158,6 @@ w=Window.new("gui",Rect.new(100,100,800,600)).front.alwaysOnTop_(true);
 		obj.value==1,{~synth=Synth.new(\ospace,[
 	\gain,~aa.value,
 	\lfo_amp,~bb.value.linlin(0,1,0.01,20).round(1/32),
-	\harm,~dd.value.linlin(0,1,1,4).round(1/8),
 	\spread,~ee.value.linlin(0,1,1,20),
 	\ripple,~ff.value.linlin(0,1,0.0001,0.5),
 	\amount,~gg.value.linlin(0,1,1,100).round(1),
@@ -164,8 +170,6 @@ a = StaticText(w, Rect(530,20,200, 20));
 a.string = "gain";
 b = StaticText(w, Rect(530,60,200, 20));
 b.string = "spherical harmonic amp lfo";
-c = StaticText(w, Rect(530,100,200, 20));
-c.string = "spherical harmonic";
 d = StaticText(w, Rect(530,140,200, 20));
 d.string = "spherical harmonic width";
 e = StaticText(w, Rect(530,180,200, 20));
@@ -202,15 +206,6 @@ y_elevation)";
 	az=obj.x.linlin(0,1,180.neg.degrad,180.degrad);
 	el=obj.y.linlin(0,1,90.neg.degrad,90.degrad);
 			if(~synth.isPlaying,{~synth.set(\azimuth,az,\elevation,el)});
-});
-);
-(
-~dd.action_({
-	arg obj;
-			var harm;
-				harm=obj.value.linlin(0,1,1,4).round(1/8);
-				harm.value.postln;
-if(~synth.isPlaying,{~synth.set(\harm,harm)});
 });
 );
 (
