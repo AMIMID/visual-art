@@ -73,10 +73,10 @@ elevation=(12).collect{
 	(
 		(
 SynthDef.new(\ospace, {
-	arg gain=1, lfo_amp=1, harm=1, azimuth, elevation, spread=1, ripple=1,amount=1,varamp=5;
+	arg gain=1, lfo_amp=1, harm=1, azimuth, elevation, spread=1, ripple=1,amount=1,cell=1;
 	var magx,magy,magz,mag_x,mag_y,mag_z,osc,magqx,magqy,mag_qx,mag_qy;
 	var mod_angle,mod_angle1,mod_angle0,magxx,m=3,mq=2;
-	var mag,wave,waveSpeed=1,waveFreq=8,theta,phi,amp=5,sphere,t;
+	var mag,wave,waveSpeed=1,waveFreq=8,theta,phi,amp=5,sphere,t,varamp=5;
 
 waveFreq=amount.lag(0.01);
 t=SinOsc.kr(ripple.lag(0.01)).range(1, 100);
@@ -125,9 +125,10 @@ cos((sphere.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(s
 
 mag=Cartesian(mag_x,mag_y,mag_z).rho;
 
-osc=VBAP.ar(8,WhiteNoise.ar(mul:mag),~b.bufnum,sphere.theta.raddeg,sphere.phi.raddeg);
+osc=VBAP.ar(8,SinOsc.ar(60,mul:mag),~b.bufnum,sphere.theta.raddeg,
+					SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
 
-					Out.ar(0,LeakDC.ar(osc,mul:gain*0.01));
+					Out.ar(0,LeakDC.ar(osc,mul:gain*0.1));
 
 }).add;
 );
@@ -160,7 +161,7 @@ w=Window.new("gui",Rect.new(100,100,800,600)).front.alwaysOnTop_(true);
 	\lfo_amp,~bb.value.linlin(0,1,0.01,20).round(1/32),
 	\spread,~ee.value.linlin(0,1,1,20),
 	\ripple,~ff.value.linlin(0,1,0.0001,0.5),
-	\amount,~gg.value.linlin(0,1,1,100).round(1),
+	\cell,~gg.value.linlin(0,1,0.01,1),
 \elevation,~cc.x.linlin(0,1,180.neg.degrad,180.degrad),
 	\azimuth,~cc.y.linlin(0,1,90.neg.degrad,90.degrad)]).register},
 		{~synth.free}
@@ -229,14 +230,14 @@ if(~synth.isPlaying,{~synth.set(\ripple,ripple)});
 			(
 ~gg.action_({
 	arg obj;
-			var amount;
-				amount=obj.value.linlin(0,1,1,100).round(1);
-				amount.value.postln;
-if(~synth.isPlaying,{~synth.set(\amount,amount)});
+			var cell;
+				cell=obj.value.linlin(0,1,0.01,1);
+				cell.value.postln;
+if(~synth.isPlaying,{~synth.set(\cell,cell)});
 });
 );
 	);
-	//s.meter;
+	s.meter;
 }
 )
 
