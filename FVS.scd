@@ -126,7 +126,7 @@ cos((sphere.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(s
 mag=Cartesian(mag_x,mag_y,mag_z).rho;
 
 osc=VBAP.ar(8,SinOsc.ar(60,mul:mag),~b.bufnum,sphere.theta.raddeg,
-					SinOsc.ar(cell,sphere.phi.linlin((pi/2).neg,(pi/2),pi.neg,pi)).range(90.neg,90));
+					SinOsc.ar(cell,sphere.phi).range(90.neg,90));
 
 					Out.ar(0,LeakDC.ar(osc,mul:gain*0.1));
 
@@ -161,7 +161,7 @@ w=Window.new("gui",Rect.new(100,100,800,600)).front.alwaysOnTop_(true);
 	\lfo_amp,~bb.value.linlin(0,1,0.01,20).round(1/32),
 	\spread,~ee.value.linlin(0,1,1,20),
 	\ripple,~ff.value.linlin(0,1,0.0001,0.5),
-	\cell,~gg.value.linlin(0,1,0.01,1),
+	\cell,~gg.value.linlin(0,1,0.01,10),
 \elevation,~cc.x.linlin(0,1,180.neg.degrad,180.degrad),
 	\azimuth,~cc.y.linlin(0,1,90.neg.degrad,90.degrad)]).register},
 		{~synth.free}
@@ -231,7 +231,7 @@ if(~synth.isPlaying,{~synth.set(\ripple,ripple)});
 ~gg.action_({
 	arg obj;
 			var cell;
-				cell=obj.value.linlin(0,1,0.01,1);
+				cell=obj.value.linlin(0,1,0.01,10);
 				cell.value.postln;
 if(~synth.isPlaying,{~synth.set(\cell,cell)});
 });
