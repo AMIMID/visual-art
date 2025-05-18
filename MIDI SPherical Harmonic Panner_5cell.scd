@@ -128,8 +128,9 @@ cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spre
 
 		mag=(Cartesian(mag_x,mag_y,mag_z).rho/(2.sqrt))+(Cartesian(mag_qx,mag_qy,mag_z).rho/(2.sqrt));
 
-			sig=PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1), loop:1,doneAction:2);
+	//sig=PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1), loop:1,doneAction:2);
 			//sig=SoundIn.ar(0)
+		sig=SinOsc.ar(60);
 
 				osc1=VBAP.ar(4,sig*mag,~b.bufnum,sph.theta.raddeg,
 				SinOsc.ar(cell,sphere.phi).range(90.neg,90));
