@@ -197,7 +197,7 @@ MIDIIn.connectAll;
 ~f=MIDIdef.cc(\midi6,{ |val, num, chan, src|
 		var elevation;
 	//[val, num, chan, src].postln;
-	elevation=val.linlin(0,127,90.neg.degrad,90.degrad);
+	elevation=val.linlin(0,127,45.neg.degrad,45.degrad);
 		elevation.postln;
 		if(~synth.isPlaying,{~synth.set(\elevation,elevation)});
 },24);
