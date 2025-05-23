@@ -3,7 +3,7 @@ Server.default = s = Server.local;
 ////server setup
 (
 s.options.numWireBufs = 1024*2;
-s.options.numOutputBusChannels=4;
+s.options.numOutputBusChannels=8;
 s.options.numInputBusChannels=0;
 TempoClock.default.tempo_(1);
 s.options.memSize = 8192*4*2;
@@ -15,11 +15,12 @@ s.options.sampleRate= 44100;
 s.waitForBoot{
 
 Buffer.freeAll;
-	~c1 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Music/SuperCollider Recordings/SC_250513_203417.wav",channels:0 );//flu
+	//~c1 = Buffer.readChannel(s,"/Users/petrostatsiopoulos/Music/SuperCollider Recordings/SC_250513_203417.wav",channels:0 );//flu
 
 ////////////////////////////////////speaker setup///other
 
-	~a = VBAPSpeakerArray.new(3, [[0, 45], [180, 45], [90, 45.neg], [90.neg, 45.neg]]);
+	//~a = VBAPSpeakerArray.new(3, [[0, 45], [180, 45], [90, 45.neg], [90.neg, 45.neg]]);
+		~a =VBAPSpeakerArray.new(3, [[0, 45], [90, 45], [180, 45], [90.neg, 45],[0, 45.neg], [90, 45.neg], [180, 45.neg], [90.neg, 45.neg]]);
 	 ~b = Buffer.loadCollection(s, ~a.getSetsAndMatrices);
 
 
@@ -74,7 +75,7 @@ elevation=(12).collect{
 		(
 SynthDef.new(\ospace, {
 	arg gain=1, lfo_amp=1, azimuth, elevation, ripple=1,cell=1;
-	var sph,osc1,spread=1,sig;
+	var sph,osc1,spread=1,sig,m=3,mq=2;
 	var magx,magy,magz,mag_x,mag_y,mag_z,magqx,magqy,mag_qx,mag_qy;
 	var ampx,ampy,ampz,mod_angle,mod_angle1;
 	var ellipsis=[1,1,1],mag,magxx;
@@ -128,26 +129,26 @@ cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spre
 
 		mag=(Cartesian(mag_x,mag_y,mag_z).rho/(2.sqrt))+(Cartesian(mag_qx,mag_qy,mag_z).rho/(2.sqrt));
 
-	//sig=PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1), loop:1,doneAction:2);
+			//sig=PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1), loop:1,doneAction:2);
 			//sig=SoundIn.ar(0)
-		sig=SinOsc.ar(60);
 
-				osc1=VBAP.ar(4,sig*mag,~b.bufnum,sph.theta.raddeg,
-				SinOsc.ar(cell,sphere.phi).range(90.neg,90));
+			sig=SinOsc.ar(50,mul:0.1);
+				osc1=VBAP.ar(8,sig*mag,~b.bufnum,sph.theta.raddeg,
+				SinOsc.ar(cell,sph.phi).range(90.neg,90));
 
 					Out.ar(0,LeakDC.ar(osc1,mul:gain));
 
 }).add;
 );
 
-~synth=Synth.new(\ospace);
+
 
 (
 MIDIClient.init;
 MIDIIn.connectAll;
 
 		(
-MIDIdef.cc(\midi1,{ |val, num, chan, src|
+~a=MIDIdef.cc(\midi1,{ |val, num, chan, src|
 		var gain;
 	//[val, num, chan, src].postln;
 	gain=val.linlin(0,127,0,1);
@@ -157,7 +158,7 @@ MIDIdef.cc(\midi1,{ |val, num, chan, src|
 	);
 
 		(
-MIDIdef.cc(\midi2,{ |val, num, chan, src|
+~b=MIDIdef.cc(\midi2,{ |val, num, chan, src|
 		var lfo_amp;
 	//[val, num, chan, src].postln;
 	lfo_amp=val.linlin(0,127,0.01,20).round(1/32);
@@ -166,16 +167,16 @@ MIDIdef.cc(\midi2,{ |val, num, chan, src|
 },21);
 	);
 	(
-MIDIdef.cc(\midi3,{ |val, num, chan, src|
-		var spread;
+~c=MIDIdef.cc(\midi3,{ |val, num, chan, src|
+		var cell;
 	//[val, num, chan, src].postln;
-	spread=val.linlin(0,127,0.01,10);
-		spread.postln;
+	cell=val.linlin(0,127,0.001,1).round(1/32);
+		cell.postln;
 		if(~synth.isPlaying,{~synth.set(\cell,cell)});
 },22);
 	);
 		(
-MIDIdef.cc(\midi4,{ |val, num, chan, src|
+~d=MIDIdef.cc(\midi4,{ |val, num, chan, src|
 		var ripple;
 	//[val, num, chan, src].postln;
 	ripple=val.linlin(0,127,0.0001,1);
@@ -184,25 +185,30 @@ MIDIdef.cc(\midi4,{ |val, num, chan, src|
 },23);
 	);
 	(
-MIDIdef.cc(\midi5,{ |val, num, chan, src|
+~e=MIDIdef.cc(\midi5,{ |val, num, chan, src|
 		var azimuth;
 	//[val, num, chan, src].postln;
 	azimuth=val.linlin(0,127,180.neg.degrad,180.degrad);
 		azimuth.postln;
 		if(~synth.isPlaying,{~synth.set(\azimuth,azimuth)});
-},24);
+},25);
 	);
 		(
-MIDIdef.cc(\midi6,{ |val, num, chan, src|
+~f=MIDIdef.cc(\midi6,{ |val, num, chan, src|
 		var elevation;
 	//[val, num, chan, src].postln;
 	elevation=val.linlin(0,127,90.neg.degrad,90.degrad);
 		elevation.postln;
 		if(~synth.isPlaying,{~synth.set(\elevation,elevation)});
-},25);
+},24);
 	);
 
-)
-}
+);
+	//~synth=Synth.new(\ospace);
+	~synth=Synth.new(\ospace,[
+\gain,~a.value,\lfo_amp,~b.value,\cell,~c.value,\ripple,~d.value,
+\azimuth,~e.value,\elevation,~f.value]).register;
+};
+s.meter;
 )
 
