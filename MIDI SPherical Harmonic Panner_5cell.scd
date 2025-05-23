@@ -81,60 +81,60 @@ SynthDef.new(\ospace, {
 	var ellipsis=[1,1,1],mag,magxx;
 	var waveSpeed = 1, waveFreq = 4, theta,phi,wave,t,amp=5,amount=5;
 
-waveFreq=amount.lag(0.01);
-t=SinOsc.kr(ripple.lag(0.01)).range(1, 100);
-mod_angle=SinOsc.ar(lfo_amp.lag(0.01),0.degrad,mul:1).range(90.neg.degrad,90.degrad);
-mod_angle1=SinOsc.ar(lfo_amp.lag(0.01),90.degrad,mul:1).range(90.neg.degrad,90.degrad);
+			// waveFreq=amount.lag(0.01);
+			// t=SinOsc.kr(ripple.lag(0.01)).range(1, 100);
+			// mod_angle=SinOsc.ar(lfo_amp.lag(0.01),0.degrad,mul:1).range(90.neg.degrad,90.degrad);
+			// mod_angle1=SinOsc.ar(lfo_amp.lag(0.01),90.degrad,mul:1).range(90.neg.degrad,90.degrad);
+			//
+			 sph=Spherical(1,azimuth.lag(0.01),elevation.lag(0.01));
+			//
+			//
+			// (
+			// 	magx=((Complex(cos(((sph.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),
+			// 		cos((((sph.theta+mod_angle).round(0.00001)*m)).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
+			// 		(Complex(cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
+			// 		cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread);
+			// 	);
+			//
+			// 	magy=((Complex(sin(((sph.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),
+			// 		sin(((sph.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
+			// 		(Complex(cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
+			// 		cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread);
+			// 	);
+			//
+			// 	magz=((Complex(cos(((sph.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),
+			// 	cos(((sph.phi).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
+			//
+			// 	magqx=((((Complex(cos(((sph.theta.round(0.00001)+mod_angle)*mq).wrap(pi.neg,pi)),
+			// 		cos(((sph.theta.round(0.00001)+mod_angle)*mq).wrap(pi.neg,pi))))*
+			// 		(Complex(sin((sph.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2))),
+			// 		sin((sph.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))))*
+			// 		(Complex(cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
+			// 	cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spread);
+			//
+			// 	magqy=((((Complex(sin(((sph.theta.round(0.00001)+mod_angle1)*mq).wrap(pi.neg,pi)),
+			// 		sin(((sph.theta.round(0.00001)+mod_angle1)*mq).wrap(pi.neg,pi))))*
+			// 		(Complex(sin((sph.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2))),
+			// 		sin((sph.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))))*
+			// 		(Complex(cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
+			// 	cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spread);
+			//
+			// 	theta = azimuth.lag(0.01).degrad;
+			// 	phi = elevation.lag(0.01).degrad;
+			// 	wave = amp*sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
+			// 	magxx=  magx * wave;
+			//
+			// 	mag_x=magxx.value;mag_y=magy.value;mag_z=magz.value;mag_qx=magqx.value;mag_qy=magqy.value
+			// );
 
-		sph=Spherical(1,azimuth.lag(0.01),elevation.lag(0.01));
-
-
-(
-magx=((Complex(cos(((sph.theta+mod_angle).round(0.00001)*m).wrap(pi.neg,pi)),
-	cos((((sph.theta+mod_angle).round(0.00001)*m)).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
-	(Complex(cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
-	cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread);
-				);
-
-magy=((Complex(sin(((sph.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi)),
-	sin(((sph.theta+mod_angle1).round(0.00001)*m).wrap(pi.neg,pi))).rho/(2.sqrt)).pow(spread)*
-		(Complex(cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
-	cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread);
-				);
-
-magz=((Complex(cos(((sph.phi+mod_angle).round(0.00001)*m).wrap((pi/2).neg,(pi/2))),
-	cos(((sph.phi+mod_angle1).round(0.00001)*m).wrap((pi/2).neg,(pi/2)))).rho/(2.sqrt)).pow(spread));
-
-magqx=((((Complex(cos(((sph.theta.round(0.00001)+mod_angle)*mq).wrap(pi.neg,pi)),
-cos(((sph.theta.round(0.00001)+mod_angle)*mq).wrap(pi.neg,pi))))*
-(Complex(sin((sph.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2))),
-sin((sph.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))))*
-(Complex(cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
-cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spread);
-
- magqy=((((Complex(sin(((sph.theta.round(0.00001)+mod_angle1)*mq).wrap(pi.neg,pi)),
-sin(((sph.theta.round(0.00001)+mod_angle1)*mq).wrap(pi.neg,pi))))*
-(Complex(sin((sph.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2))),
-sin((sph.phi.round(0.00001)*(mq-1)).wrap((pi/2).neg,(pi/2)))))*
-(Complex(cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))),
-cos((sph.phi.round(0.00001)).wrap((pi/2).neg,(pi/2))))))).rho/(2.sqrt)).pow(spread);
-
- theta = azimuth.lag(0.01).degrad;
-  phi = elevation.lag(0.01).degrad;
-	 wave = amp*sin(waveFreq * theta + waveFreq * phi - waveSpeed * t);
-  magxx=  magx * wave;
-
-				mag_x=magxx.value;mag_y=magy.value;mag_z=magz.value;mag_qx=magqx.value;mag_qy=magqy.value
-				);
-
-		mag=(Cartesian(mag_x,mag_y,mag_z).rho/(2.sqrt))+(Cartesian(mag_qx,mag_qy,mag_z).rho/(2.sqrt));
-
+	//	mag=(Cartesian(mag_x,mag_y,mag_z).rho/(2.sqrt))+(Cartesian(mag_qx,mag_qy,mag_z).rho/(2.sqrt));
+mag=4;
 			//sig=PlayBuf.ar(1, ~c1.bufnum, BufRateScale.kr(~c1), loop:1,doneAction:2);
 			//sig=SoundIn.ar(0)
 
 			sig=SinOsc.ar(50,mul:0.1);
-				osc1=VBAP.ar(8,sig*mag,~b.bufnum,sph.theta.raddeg,
-				SinOsc.ar(cell,sph.phi).range(90.neg,90));
+			osc1=VBAP.ar(8,sig*mag,~b.bufnum,sph.theta.raddeg,sph.phi.raddeg);
+				//SinOsc.ar(cell,sph.phi).range(90.neg,90));
 
 					Out.ar(0,LeakDC.ar(osc1,mul:gain));
 
@@ -157,33 +157,33 @@ MIDIIn.connectAll;
 },20);
 	);
 
-		(
-~b=MIDIdef.cc(\midi2,{ |val, num, chan, src|
-		var lfo_amp;
-	//[val, num, chan, src].postln;
-	lfo_amp=val.linlin(0,127,0.01,20).round(1/32);
-		lfo_amp.postln;
-		if(~synth.isPlaying,{~synth.set(\lfo_amp,lfo_amp)});
-},21);
-	);
-	(
-~c=MIDIdef.cc(\midi3,{ |val, num, chan, src|
-		var cell;
-	//[val, num, chan, src].postln;
-	cell=val.linlin(0,127,0.001,1).round(1/32);
-		cell.postln;
-		if(~synth.isPlaying,{~synth.set(\cell,cell)});
-},22);
-	);
-		(
-~d=MIDIdef.cc(\midi4,{ |val, num, chan, src|
-		var ripple;
-	//[val, num, chan, src].postln;
-	ripple=val.linlin(0,127,0.0001,1);
-		ripple.postln;
-		if(~synth.isPlaying,{~synth.set(\ripple,ripple)});
-},23);
-	);
+		// (
+		// 	~b=MIDIdef.cc(\midi2,{ |val, num, chan, src|
+		// 		var lfo_amp;
+		// 		//[val, num, chan, src].postln;
+		// 		lfo_amp=val.linlin(0,127,0.01,20).round(1/32);
+		// 		lfo_amp.postln;
+		// 		if(~synth.isPlaying,{~synth.set(\lfo_amp,lfo_amp)});
+		// 	},21);
+		// );
+		// (
+		// 	~c=MIDIdef.cc(\midi3,{ |val, num, chan, src|
+		// 		var cell;
+		// 		//[val, num, chan, src].postln;
+		// 		cell=val.linlin(0,127,0.001,1).round(1/32);
+		// 		cell.postln;
+		// 		if(~synth.isPlaying,{~synth.set(\cell,cell)});
+		// 	},22);
+		// );
+		// (
+		// 	~d=MIDIdef.cc(\midi4,{ |val, num, chan, src|
+		// 		var ripple;
+		// 		//[val, num, chan, src].postln;
+		// 		ripple=val.linlin(0,127,0.0001,1);
+		// 		ripple.postln;
+		// 		if(~synth.isPlaying,{~synth.set(\ripple,ripple)});
+		// 	},23);
+		// );
 	(
 ~e=MIDIdef.cc(\midi5,{ |val, num, chan, src|
 		var azimuth;
@@ -206,7 +206,8 @@ MIDIIn.connectAll;
 );
 	//~synth=Synth.new(\ospace);
 	~synth=Synth.new(\ospace,[
-\gain,~a.value,\lfo_amp,~b.value,\cell,~c.value,\ripple,~d.value,
+\gain,~a.value,
+		//\lfo_amp,~b.value,\cell,~c.value,\ripple,~d.value,
 \azimuth,~e.value,\elevation,~f.value]).register;
 };
 s.meter;
